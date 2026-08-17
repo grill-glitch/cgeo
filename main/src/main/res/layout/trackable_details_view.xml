@@ -41,7 +41,7 @@
                 android:linksClickable="true"
                 android:textIsSelectable="true"
                 android:textSize="@dimen/textSize_detailsPrimary"
-                android:textColor="@color/colorText"
+                android:textColor="?attr/colorOnSurface"
                 android:visibility="gone"
                 tools:visibility="visible"
                 tools:text="goal of the trackable"/>
@@ -68,7 +68,7 @@
                 android:linksClickable="true"
                 android:textIsSelectable="true"
                 android:textSize="@dimen/textSize_detailsPrimary"
-                android:textColor="@color/colorText"
+                android:textColor="?attr/colorOnSurface"
                 android:visibility="gone"
                 tools:visibility="visible"
                 tools:text="details of the trackable"/>
@@ -126,7 +126,7 @@
                     android:layout_marginRight="60dip"
                     android:paddingRight="3dip"
                     android:textSize="@dimen/textSize_detailsSecondary"
-                    android:textColor="@color/colorText"
+                    android:textColor="?attr/colorOnSurface"
                     android:textIsSelectable="false" />
 
                 <Button
@@ -166,7 +166,7 @@
                     android:layout_marginRight="60dip"
                     android:paddingRight="3dip"
                     android:textSize="@dimen/textSize_detailsSecondary"
-                    android:textColor="@color/colorText"
+                    android:textColor="?attr/colorOnSurface"
                     android:textIsSelectable="false" />
 
                 <Button

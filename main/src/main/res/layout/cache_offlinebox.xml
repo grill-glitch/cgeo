@@ -25,7 +25,7 @@
             android:paddingRight="3dip"
             android:textIsSelectable="false"
             android:textSize="@dimen/textSize_detailsSecondary"
-            android:textColor="@color/colorText"/>
+            android:textColor="?attr/colorOnSurface"/>
 
         <TextView
             android:id="@+id/offline_lists"
@@ -36,7 +36,7 @@
             android:textIsSelectable="false"
             android:textSize="@dimen/textSize_detailsSecondary"
             tools:text="list 1, list 2"
-            android:textColor="@color/colorText"/>
+            android:textColor="?attr/colorOnSurface"/>
     </LinearLayout>
 
     <LinearLayout

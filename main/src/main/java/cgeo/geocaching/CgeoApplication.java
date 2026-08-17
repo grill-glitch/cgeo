@@ -30,6 +30,8 @@ import android.os.UserManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.color.DynamicColors;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
@@ -159,6 +161,11 @@ public class CgeoApplication extends Application {
             setupRxJavaErrorHandler();
 
             Settings.setAppThemeAutomatically(this);
+
+            // Material You dynamic colors on Android 12+ (falls back to the static palette below on older versions)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                DynamicColors.applyToActivitiesIfAvailable(this);
+            }
 
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
                 fixUserManagerMemoryLeak();

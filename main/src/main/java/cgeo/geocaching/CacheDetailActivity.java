@@ -87,6 +87,7 @@ import cgeo.geocaching.ui.recyclerview.RecyclerViewProvider;
 import cgeo.geocaching.utils.AndroidRxUtils;
 import cgeo.geocaching.utils.AngleUtils;
 import cgeo.geocaching.utils.CacheInfoBoxes;
+import cgeo.geocaching.utils.CacheTypeColorScheme;
 import cgeo.geocaching.utils.CalendarUtils;
 import cgeo.geocaching.utils.CheckerUtils;
 import cgeo.geocaching.utils.ClipboardUtils;
@@ -175,6 +176,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import io.noties.markwon.Markwon;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -1016,6 +1020,7 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
         cache.setChangeNotificationHandler(new ChangeNotificationHandler(this));
 
         setCacheTitleBar(cache);
+        applyCacheTypeColors(cache);
         setIsContentRefreshable(cache.supportsRefresh());
 
         // reset imagesList so Images view page will be redrawn
@@ -1032,6 +1037,47 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
         if (CacheDetailActivity.this.restartSpeechService) {
             SpeechService.toggleService(this, cache.getCoords());
             CacheDetailActivity.this.restartSpeechService = false;
+        }
+    }
+
+    /**
+     * MD3: color the whole cache-detail UI with a color scheme derived from the cache
+     * type color (as the "seed"). The detail page follows the cache type while the
+     * rest of the app follows the system dynamic palette.
+     */
+    private void applyCacheTypeColors(@NonNull final Geocache cache) {
+        // Match the app's own color logic (see MapMarkerUtils / CacheType.getActionBarColor):
+        // archived/disabled caches use the grey "disabled" tone, active ones use the type color.
+        // NOTE: CacheType.typeColor is a COLOR RESOURCE ID (@ColorRes), not a color value -
+        // resolve it via the resources like CacheType.getActionBarColor() does.
+        final int typeColorRes = (cache.isArchived() || cache.isDisabled())
+                ? R.color.cacheType_disabled
+                : cache.getType().typeColor;
+        final int effectiveTypeColor = getResources().getColor(typeColorRes);
+        final CacheTypeColorScheme scheme = CacheTypeColorScheme.fromSeed(this, effectiveTypeColor);
+
+        // action bar: primary-derived container color, with matching on-color
+        final View actionBarView = getActionBarView();
+        if (actionBarView != null) {
+            actionBarView.setBackgroundColor(scheme.primaryContainer);
+        }
+        final androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(cache.getName() + " (" + cache.getShortGeocode() + ")");
+        }
+
+        // tab layout: background from surfaceContainer, indicator/selected text from primary
+        final TabLayout tabLayout = findViewById(R.id.tab_layout);
+        if (tabLayout != null) {
+            tabLayout.setBackgroundColor(scheme.surfaceContainer);
+            tabLayout.setSelectedTabIndicatorColor(scheme.primary);
+            tabLayout.setTabTextColors(scheme.onSurface, scheme.primary);
+        }
+
+        // pull-to-refresh spinner: primary
+        final SwipeRefreshLayout swipe = findViewById(R.id.swipe_refresh);
+        if (swipe != null) {
+            swipe.setColorSchemeColors(scheme.primary);
         }
     }
 

@@ -35,7 +35,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/textSize_detailsPrimary"
-                android:textColor="@color/colorText"
+                android:textColor="?attr/colorOnSurface"
                 android:textIsSelectable="true"
                 android:autoLink="web" />
 
@@ -70,7 +70,7 @@
                 android:id="@+id/debug_info"
                 android:paddingTop="5dp"
                 android:textSize="@dimen/textSize_detailsPrimary"
-                android:textColor="@color/colorText"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true"

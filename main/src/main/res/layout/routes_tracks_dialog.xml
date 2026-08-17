@@ -21,7 +21,7 @@
             android:layout_toLeftOf="@id/indivroute_load"
             style="@style/flat_separator_horizontal_heading_text"
             android:textSize="@dimen/textSize_detailsPrimary"
-            android:textColor="@color/colorText"
+            android:textColor="?attr/colorOnSurface"
             android:textFontWeight="400"
             android:text="@string/individual_route" />
 
@@ -84,7 +84,7 @@
             android:gravity="right"
             android:layout_alignBaseline="@id/routes_tracks_header"
             android:textSize="@dimen/textSize_detailsSecondary"
-            android:textColor="@color/colorText"
+            android:textColor="?attr/colorOnSurface"
             android:maxLines="2"
             android:ellipsize="end"
             android:paddingRight="10dp"

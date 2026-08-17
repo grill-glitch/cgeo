@@ -18,7 +18,7 @@
         android:id="@+id/menu_rename"
         android:title="@string/list_dialog_rename"
         android:icon="@drawable/ic_menu_edit"
-        app:iconTint="@color/colorText"
+        app:iconTint="?attr/colorOnSurface"
         android:visibility="gone"/>
     <item
         android:id="@+id/menu_optimize"

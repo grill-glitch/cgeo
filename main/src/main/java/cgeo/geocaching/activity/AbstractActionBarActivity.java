@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,8 +85,11 @@ public class AbstractActionBarActivity extends AbstractActivity {
 
         final View actionBarView = getActionBarView();
         if (actionBarView != null) {
-            // set action bar background color, otherwise it would be transparent
-            actionBarView.setBackgroundColor(getResources().getColor(R.color.colorBackgroundActionBar));
+            // set action bar background color, otherwise it would be transparent;
+            // use the theme's surface-container so it follows the (dynamic) palette
+            final TypedValue tv = new TypedValue();
+            getTheme().resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, tv, true);
+            actionBarView.setBackgroundColor(tv.data);
         }
     }
 
@@ -250,7 +254,10 @@ public class AbstractActionBarActivity extends AbstractActivity {
             return;
         }
         if (cacheType == null) {
-            actionBarView.setBackgroundColor(getResources().getColor(R.color.colorBackgroundActionBar));
+            // no cache type -> follow the theme's (dynamic) surface container
+            final TypedValue tv = new TypedValue();
+            getTheme().resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, tv, true);
+            actionBarView.setBackgroundColor(tv.data);
             return;
         }
 

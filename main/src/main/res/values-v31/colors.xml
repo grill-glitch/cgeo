@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Android 12+ (API 31+): Material You dynamic colors (resource layer).
+
+        colorAccent is the single source for the app's accent (themes.xml maps
+        colorPrimary/colorSecondary/... to it). Overriding it with the system's
+        dynamic accent1 makes every accent-colored element follow the wallpaper
+        palette on Android 12+, while older devices keep the static orange from
+        values/colors.xml.
+
+        NOTE: only the accent family is used here. The neutral family of the
+        system dynamic palette is NOT public in the compile-time android.jar,
+        so backgrounds/text stay on the static palette (values/colors.xml +
+        values-night/colors_dark.xml).
+    -->
+
+    <color name="colorAccent">@android:color/system_accent1_500</color>
+
+</resources>

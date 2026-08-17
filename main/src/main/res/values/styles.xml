@@ -13,7 +13,7 @@
 
     <style name="text_default" parent="@style/text">
         <item name="android:textSize">@dimen/textSize_detailsPrimary</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="text_label" parent="text">
@@ -30,7 +30,7 @@
     <style name="checkboxStyle" parent="@style/Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="android:minHeight">@dimen/radioButtonCheckboxPreferredItemHeight</item>
         <item name="android:textSize">@dimen/textSize_detailsPrimary</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="checkbox_full">
@@ -64,7 +64,7 @@
 
     <style name="alertDialogBodyTextStyle" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
         <item name="android:textSize">@dimen/textSize_detailsPrimary</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <!-- actionbar -->
@@ -83,7 +83,7 @@
     </style>
 
     <style name="actionBarActionOverflow2" parent="actionBarActionOverflow">
-        <item name="tint">@color/colorText</item>
+        <item name="tint">?attr/colorOnSurface</item>
     </style>
 
     <style name="tool_bar" parent="actionBarStyle">
@@ -120,7 +120,7 @@
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">@dimen/textSize_buttonsPrimary</item>
         <item name="strokeColor">@color/button_strokecolor_selector</item>
-        <item name="iconTint">@color/colorText</item>
+        <item name="iconTint">?attr/colorOnSurface</item>
     </style>
 
     <style name="button_full_base" parent="button_base">
@@ -312,7 +312,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:inputType">text</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="colorOnSurface">@color/colorText</item>
         <item name="android:gravity">top|left</item>
         <item name="android:textSize">@dimen/textSize_textinputPrimary</item>
@@ -330,7 +330,7 @@
         <item name="android:autoText">true</item>
         <item name="android:gravity">top|left</item>
         <item name="android:capitalize">none</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="edittext_dialog" parent="edittext">
@@ -450,7 +450,7 @@
     <style name="flat_separator_horizontal_heading_text" parent="@style/TextAppearance.Material3.TitleMedium">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">18sp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
@@ -489,7 +489,7 @@
         <item name="android:scrollHorizontally">true</item>
         <item name="android:singleLine">true</item>
         <item name="android:textSize">@dimen/textSize_headingSecondary</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <!-- date, found state on the left of a log entry -->
@@ -523,7 +523,7 @@
         <item name="android:max">5</item>
         <item name="android:stepSize">0.5</item>
         <item name="android:isIndicator">true</item>
-        <item name="android:progressTint">@color/colorAccent</item>
+        <item name="android:progressTint">?attr/colorPrimary</item>
     </style>
 
     <!-- map distance info styles -->
@@ -641,7 +641,7 @@
     <!-- about pages styles -->
     <style name="about_base">
         <item name="android:textSize">@dimen/textSize_detailsPrimary</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:layout_gravity">left</item>
     </style>
     <style name="about_contributors" parent="@style/about_base">
@@ -672,7 +672,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textAlignment">textStart</item>
         <item name="android:textSize">@dimen/textSize_detailsSecondary</item>
         <item name="android:textStyle">bold</item>
@@ -681,7 +681,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingStart">4dp</item>
-        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textAlignment">textEnd</item>
         <item name="android:textSize">@dimen/textSize_detailsSecondary</item>
         <item name="android:textStyle">bold</item>

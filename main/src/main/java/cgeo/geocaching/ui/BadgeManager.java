@@ -1,5 +1,7 @@
 package cgeo.geocaching.ui;
 
+import cgeo.geocaching.R;
+
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,6 @@ public class BadgeManager {
     private static final BadgeManager INSTANCE = new BadgeManager();
 
     private static final int COLOR_PRIO_HIGH = Color.RED; // red
-    private static final int COLOR_PRIO_LOW = 0xFFF5981D;  // orange, accent color
 
 
     private final Object mutex = new Object();
@@ -41,7 +42,8 @@ public class BadgeManager {
             return;
         }
 
-        final int badgeColor = isHighPrio ? COLOR_PRIO_HIGH : COLOR_PRIO_LOW;
+        final int badgeColor = isHighPrio ? COLOR_PRIO_HIGH :
+                view.getContext().getResources().getColor(R.color.colorAccent);
         final int badgeCount = Math.max(0, count);
 
         //start mutex here because we check for existing badge

@@ -52,4 +52,7 @@ captures/
 # ignore Claude internal files
 .claude/
 
-main/usage.txtcgeo-release.keystore
+# build artifacts & signing
+main/usage.txt
+*.keystore
+private.properties

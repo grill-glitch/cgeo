@@ -13,7 +13,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:src="@drawable/expand_less"
-        app:tint="@color/colorText" />
+        app:tint="?attr/colorOnSurface" />
 
     <TextView
         style="@style/TextAppearance.AppCompat.Title"

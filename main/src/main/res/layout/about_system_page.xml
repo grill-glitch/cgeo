@@ -45,7 +45,7 @@
                 android:paddingLeft="3dip"
                 android:textIsSelectable="true"
                 style="@style/about_base"
-                android:textColor="@color/colorTextHint"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 tools:text="long list of system properties"/>
 
         </LinearLayout>

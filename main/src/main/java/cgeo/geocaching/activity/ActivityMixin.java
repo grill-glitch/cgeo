@@ -11,6 +11,7 @@ import cgeo.geocaching.utils.functions.Action1;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Window;
@@ -25,6 +26,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.core.app.TaskStackBuilder;
+
+import com.google.android.material.color.DynamicColors;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,6 +56,14 @@ public final class ActivityMixin {
 
     public static void setTheme(final Activity activity, final boolean isDialog) {
         activity.setTheme(isDialog ? getDialogTheme() : getThemeId());
+        // Re-apply Material You dynamic colors AFTER the app's own setTheme() call.
+        // DynamicColors.applyToActivitiesIfAvailable() hooks onActivityPreCreated, but
+        // c:geo activities call setTheme() themselves in onCreate(), which would drop
+        // the injected dynamic overlay. Applying it here keeps the wallpaper-derived
+        // palette alive regardless of that override.
+        if (!isDialog && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            DynamicColors.applyToActivityIfAvailable(activity);
+        }
     }
 
     public static int getDialogTheme() {

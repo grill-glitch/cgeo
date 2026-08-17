@@ -13,7 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_margin="5dp"
         android:minHeight="0dip"
-        app:tint="@color/colorText" />
+        app:tint="?attr/colorOnSurface" />
 
     <TextView
         android:id="@+id/text"
@@ -35,6 +35,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_menu_delete"
-        app:tint="@color/colorText" />
+        app:tint="?attr/colorOnSurface" />
 
 </RelativeLayout>

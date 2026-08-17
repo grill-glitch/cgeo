@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Android 12+ dark mode: Material You dynamic accent (resource layer).
+        system_accent1_200 is the dark-theme-appropriate dynamic accent tone.
+    -->
+
+    <color name="colorAccent">@android:color/system_accent1_200</color>
+
+</resources>

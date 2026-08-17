@@ -2,7 +2,7 @@
 <resources>
 
     <!-- theme for (nearly) all activities -->
-    <style name="cgeo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="cgeo" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar">
         <!-- UX component styles -->
         <item name="checkboxStyle">@style/checkboxStyle</item>
         <item name="radioButtonStyle">@style/radioButtonStyle</item>
