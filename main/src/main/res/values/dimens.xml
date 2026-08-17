@@ -55,6 +55,7 @@
     <!-- all other text -->
     <dimen name="textSize_detailsPrimary">16sp</dimen>
     <dimen name="textSize_detailsSecondary">14sp</dimen>
+    <dimen name="textSize_detailsPrimaryLarge">20sp</dimen>
 
 
     <!-- button size dimensions ====================================== -->

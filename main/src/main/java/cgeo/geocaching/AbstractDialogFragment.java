@@ -14,9 +14,11 @@ import cgeo.geocaching.sensors.GeoData;
 import cgeo.geocaching.sensors.GeoDirHandler;
 import cgeo.geocaching.settings.Settings;
 import cgeo.geocaching.storage.DataStore;
+import cgeo.geocaching.ui.CacheDetailCardBuilder;
 import cgeo.geocaching.ui.CacheDetailsCreator;
 import cgeo.geocaching.ui.CoordinatesFormatSwitcher;
 import cgeo.geocaching.ui.ViewUtils;
+import cgeo.geocaching.utils.CacheTypeColorScheme;
 import cgeo.geocaching.utils.LocalizationUtils;
 import cgeo.geocaching.utils.Log;
 
@@ -26,10 +28,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -120,19 +124,52 @@ public abstract class AbstractDialogFragment extends Fragment implements CacheMe
         assert cache != null;
 
         // cache type
-        final String cacheType = cache.getType().getL10n();
-        final String cacheSize = cache.showSize() ? " (" + cache.getSize().getL10n() + ")" : "";
-        details.add(R.string.cache_type, cacheType + cacheSize);
+        final CacheDetailsCreator.NameValueLine typeLine = details.add(R.string.cache_type, cache.getType().getL10n());
+        final View sizeRow = cache.showSize() ? details.addSize(cache) : null;
 
         if (showGeocode) {
             details.add(R.string.cache_geocode, cache.getShortGeocode());
         }
         details.addCacheState(cache);
 
-        cacheDistance = details.addDistance(cache, cacheDistance);
+        final TextView cacheDistanceView = details.addDistance(cache, cacheDistance);
+        cacheDistance = cacheDistanceView;
 
-        details.addDifficultyTerrain(cache);
+        final View diffRow = details.addDifficulty(cache);
+        final View terrainRow = details.addTerrain(cache);
         details.addEventDate(cache);
+
+        // regroup the property rows into cards: top row [type, size, distance], second [difficulty, terrain]
+        final LinearLayout detailsList = (LinearLayout) details.getParentView();
+        if (typeLine != null && detailsList != null) {
+            final View typeRow = typeLine.layout;
+            final View distanceRow = cacheDistanceView != null ? (View) cacheDistanceView.getParent().getParent() : null;
+            for (final View row : new View[]{typeRow, sizeRow, distanceRow, diffRow, terrainRow}) {
+                if (row != null) {
+                    detailsList.removeView(row);
+                }
+            }
+            final LayoutInflater inflater = requireActivity().getLayoutInflater();
+            final int seed = requireActivity().getResources().getColor(getCacheTypeColor(cache));
+            final CacheTypeColorScheme scheme = CacheTypeColorScheme.fromSeed(requireActivity(), seed);
+            final LinearLayout row1 = CacheDetailCardBuilder.createPropertyCardRow(requireActivity());
+            row1.addView(CacheDetailCardBuilder.createPropertyCard(inflater, detailsList, CacheDetailCardBuilder.labelOf(typeRow), CacheDetailCardBuilder.valueOf(typeRow), CacheDetailCardBuilder.starsOf(typeRow), scheme));
+            if (sizeRow != null) {
+                row1.addView(CacheDetailCardBuilder.createPropertyCard(inflater, detailsList, CacheDetailCardBuilder.labelOf(sizeRow), CacheDetailCardBuilder.valueOf(sizeRow), CacheDetailCardBuilder.starsOf(sizeRow), scheme));
+            }
+            if (distanceRow != null) {
+                row1.addView(CacheDetailCardBuilder.createPropertyCard(inflater, detailsList, CacheDetailCardBuilder.labelOf(distanceRow), CacheDetailCardBuilder.valueOf(distanceRow), CacheDetailCardBuilder.starsOf(distanceRow), scheme));
+            }
+            final LinearLayout row2 = CacheDetailCardBuilder.createPropertyCardRow(requireActivity());
+            if (diffRow != null) {
+                row2.addView(CacheDetailCardBuilder.createPropertyCard(inflater, detailsList, CacheDetailCardBuilder.labelOf(diffRow), CacheDetailCardBuilder.valueOf(diffRow), CacheDetailCardBuilder.starsOf(diffRow), scheme));
+            }
+            if (terrainRow != null) {
+                row2.addView(CacheDetailCardBuilder.createPropertyCard(inflater, detailsList, CacheDetailCardBuilder.labelOf(terrainRow), CacheDetailCardBuilder.valueOf(terrainRow), CacheDetailCardBuilder.starsOf(terrainRow), scheme));
+            }
+            detailsList.addView(row1, 0);
+            detailsList.addView(row2, 1);
+        }
 
         // rating
         if (cache.getRating() > 0) {
@@ -171,6 +208,11 @@ public abstract class AbstractDialogFragment extends Fragment implements CacheMe
 
         /* Only working combination as it seems */
         registerForContextMenu(buttonMore);
+    }
+
+    /** The cache-type seed color resource (grey for archived/disabled caches), like the detail page uses. */
+    private static int getCacheTypeColor(@NonNull final Geocache cache) {
+        return (cache.isArchived() || cache.isDisabled()) ? R.color.cacheType_disabled : cache.getType().typeColor;
     }
 
     public final void showToast(final String text) {

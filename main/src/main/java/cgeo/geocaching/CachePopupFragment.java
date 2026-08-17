@@ -1,5 +1,6 @@
 package cgeo.geocaching;
 
+import cgeo.geocaching.R;
 import cgeo.geocaching.activity.AbstractNavigationBarMapActivity;
 import cgeo.geocaching.activity.Progress;
 import cgeo.geocaching.apps.navi.NavigationAppFactory;
@@ -16,6 +17,7 @@ import cgeo.geocaching.speech.SpeechService;
 import cgeo.geocaching.storage.DataStore;
 import cgeo.geocaching.ui.CacheDetailsCreator;
 import cgeo.geocaching.ui.ViewUtils;
+import cgeo.geocaching.utils.CacheTypeColorScheme;
 import cgeo.geocaching.ui.WeakReferenceHandler;
 import cgeo.geocaching.utils.AndroidRxUtils;
 import cgeo.geocaching.utils.CacheInfoBoxes;
@@ -134,6 +136,7 @@ public class CachePopupFragment extends AbstractDialogFragmentWithProximityNotif
             final Toolbar toolbar = binding.toolbar.toolbar;
             toolbar.setTitle(geocode);
             setToolbarBackgroundColor(toolbar, binding.swipeUpIndicator.swipeUpIndicator, cache.getType(), cache.isEnabled());
+            applyPopupBackgroundColor(cache);
 
             toolbar.setLogo(MapMarkerUtils.getCacheMarker(getResources(), cache, CacheListType.MAP, Settings.getIconScaleEverywhere()).getDrawable());
             toolbar.setLongClickable(true);
@@ -379,6 +382,21 @@ public class CachePopupFragment extends AbstractDialogFragmentWithProximityNotif
             return null;
         }
         return new TargetInfo(cache.getCoords(), cache.getGeocode());
+    }
+
+    /**
+     * MD3: give the map popup the same colors as the cache detail page:
+     * - popup background = detail page background ({@code CacheTypeColorScheme.surface})
+     * - the property cards inside are already colored by AbstractDialogFragment
+     *   ({@code CacheTypeColorScheme.surfaceContainer}, same as the detail cards).
+     */
+    private void applyPopupBackgroundColor(@NonNull final Geocache cache) {
+        final int typeColorRes = (cache.isArchived() || cache.isDisabled())
+                ? R.color.cacheType_disabled
+                : cache.getType().typeColor;
+        final int effectiveTypeColor = getResources().getColor(typeColorRes);
+        final CacheTypeColorScheme scheme = CacheTypeColorScheme.fromSeed(requireContext(), effectiveTypeColor);
+        binding.detailsListBox.setBackgroundColor(scheme.surface);
     }
 
     @Override

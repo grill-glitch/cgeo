@@ -66,6 +66,7 @@ import cgeo.geocaching.speech.SpeechService;
 import cgeo.geocaching.storage.DataStore;
 import cgeo.geocaching.storage.extension.OneTimeDialogs;
 import cgeo.geocaching.ui.AnchorAwareLinkMovementMethod;
+import cgeo.geocaching.ui.CacheDetailCardBuilder;
 import cgeo.geocaching.ui.CacheDetailsCreator;
 import cgeo.geocaching.ui.CompassMiniView;
 import cgeo.geocaching.ui.CoordinatesFormatSwitcher;
@@ -138,7 +139,9 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.text.util.Linkify;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -149,6 +152,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
@@ -176,9 +180,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 import io.noties.markwon.Markwon;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -236,6 +242,10 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
 
     // some views that must be available from everywhere // TODO: Reference can block GC?
     private TextView cacheDistanceView;
+
+    /** Seed-derived color scheme for the cache detail UI (set once the cache is loaded). */
+    @Nullable
+    private CacheTypeColorScheme cacheColorScheme;
 
     private ImageGalleryView imageGallery;
     private int imageGalleryPos = -1;
@@ -336,7 +346,8 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
         }
 
         // If we open this cache from a search, let's properly initialize the title bar, even if we don't have cache details
-        setCacheTitleBar(geocode, name);
+        // title bar shows the geocode only (the cache name is displayed centered above the cards, like the map popup)
+        setCacheTitleBar(geocode, null);
 
         final LoadCacheHandler loadCacheHandler = new LoadCacheHandler(this, progress);
 
@@ -1020,6 +1031,8 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
         cache.setChangeNotificationHandler(new ChangeNotificationHandler(this));
 
         setCacheTitleBar(cache);
+        // title bar shows the geocode only (the cache name is displayed centered above the cards)
+        setTitle(cache.getGeocode());
         applyCacheTypeColors(cache);
         setIsContentRefreshable(cache.supportsRefresh());
 
@@ -1055,15 +1068,33 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
                 : cache.getType().typeColor;
         final int effectiveTypeColor = getResources().getColor(typeColorRes);
         final CacheTypeColorScheme scheme = CacheTypeColorScheme.fromSeed(this, effectiveTypeColor);
+        cacheColorScheme = scheme;
 
-        // action bar: primary-derived container color, with matching on-color
+        // action bar: seed-derived surfaceContainer (deep tone, not the bright
+        // primaryContainer) with matching on-surface text/buttons
         final View actionBarView = getActionBarView();
         if (actionBarView != null) {
-            actionBarView.setBackgroundColor(scheme.primaryContainer);
+            actionBarView.setBackgroundColor(scheme.surfaceContainer);
+            if (actionBarView instanceof com.google.android.material.appbar.MaterialToolbar) {
+                final com.google.android.material.appbar.MaterialToolbar tb = (com.google.android.material.appbar.MaterialToolbar) actionBarView;
+                tb.setNavigationIconTint(scheme.onSurface);
+                tb.setTitleTextColor(scheme.onSurface);
+                tb.setSubtitleTextColor(scheme.onSurface);
+            }
         }
         final androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(cache.getName() + " (" + cache.getShortGeocode() + ")");
+            actionBar.setTitle(TextUtils.coloredCacheText(this, cache, cache.getName() + " (" + cache.getShortGeocode() + ")"));
+        }
+
+        // content area: seed-derived surface instead of the system palette
+        final View contentRoot = findViewById(R.id.activity_content);
+        if (contentRoot != null) {
+            contentRoot.setBackgroundColor(scheme.surface);
+        }
+        final ViewPager2 pager = findViewById(R.id.viewpager);
+        if (pager != null) {
+            pager.setBackgroundColor(scheme.surface);
         }
 
         // tab layout: background from surfaceContainer, indicator/selected text from primary
@@ -1374,6 +1405,31 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
             return CachedetailDetailsPageBinding.inflate(inflater, container, false);
         }
 
+        /** Create a horizontal row container for property cards. */
+        private LinearLayout createPropertyCardRow() {
+            return CacheDetailCardBuilder.createPropertyCardRow(getContext());
+        }
+
+        /** Build a single property card: large bold value on top, label below, optional stars. */
+        private View createPropertyCard(@NonNull final CharSequence label, @NonNull final CharSequence value, @Nullable final RatingBar stars) {
+            final CacheDetailActivity act = (CacheDetailActivity) getActivity();
+            final CacheTypeColorScheme scheme = act == null ? null : act.cacheColorScheme;
+            return CacheDetailCardBuilder.createPropertyCard(getLayoutInflater(), binding.detailsList, label, value, stars, scheme);
+        }
+
+        private CharSequence labelOf(@Nullable final View row) {
+            return CacheDetailCardBuilder.labelOf(row);
+        }
+
+        private CharSequence valueOf(@Nullable final View row) {
+            return CacheDetailCardBuilder.valueOf(row);
+        }
+
+        @Nullable
+        private RatingBar starsOf(@Nullable final View row) {
+            return CacheDetailCardBuilder.starsOf(row);
+        }
+
         @Override
         public long getPageId() {
             return Page.DETAILS.id;
@@ -1397,9 +1453,14 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
             // Reference to the details list and favorite line, so that the helper-method can access them without an additional argument
             final CacheDetailsCreator details = new CacheDetailsCreator(activity, binding.detailsList);
 
-            // cache name (full name), may be editable
-            // Not using colored cache names at this place to have at least one place without any formatting to support visually impaired users
-            final TextView cachename = details.add(R.string.cache_name, cache.getName()).valueView;
+            // cache name as a centered page title above all cards (like the map popup),
+            // large font; may be editable
+            final TextView cachename = new TextView(activity);
+            cachename.setText(cache.getName());
+            cachename.setGravity(Gravity.CENTER);
+            cachename.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f);
+            cachename.setTextColor(MaterialColors.getColor(cachename, com.google.android.material.R.attr.colorOnSurface));
+            cachename.setPadding(dp2px(activity, 12), dp2px(activity, 8), dp2px(activity, 12), dp2px(activity, 4));
             details.addShareAction(cachename);
             if (cache.supportsNamechange()) {
                 cachename.setOnClickListener(v -> Dialogs.input(activity, LocalizationUtils.getString(R.string.cache_name_set), cache.getName(), LocalizationUtils.getString(R.string.caches_sort_name), name -> {
@@ -1410,18 +1471,51 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
                 }));
             }
 
-            details.add(R.string.cache_type, cache.getType().getL10n());
+            // --- property cards: top row [type, size, distance], second row [difficulty, terrain] ---
+            final CacheDetailsCreator.NameValueLine typeLine = details.add(R.string.cache_type, cache.getType().getL10n());
             if (cache.getType() == CacheType.ADVLAB) {
                 details.addAlcMode(cache);
             }
-            details.addSize(cache);
+            final View sizeRow = details.addSize(cache);
+            final TextView distanceView = details.addDistance(cache, activity.cacheDistanceView);
+            activity.cacheDistanceView = distanceView;
+            final View diffRow = details.addDifficulty(cache);
+            final View terrainRow = details.addTerrain(cache);
+
+            // remove the card rows (and the name row) from the flat list so we can regroup them
+            final View typeRow = typeLine.layout;
+            final View distanceRow = distanceView != null ? (View) distanceView.getParent().getParent() : null;
+            for (final View row : new View[]{typeRow, sizeRow, distanceRow, diffRow, terrainRow}) {
+                if (row != null) {
+                    binding.detailsList.removeView(row);
+                }
+            }
+
+            // top row: one card per property - type, size, distance
+            final LinearLayout row1 = createPropertyCardRow();
+            row1.addView(createPropertyCard(labelOf(typeRow), valueOf(typeRow), starsOf(typeRow)));
+            if (sizeRow != null) {
+                row1.addView(createPropertyCard(labelOf(sizeRow), valueOf(sizeRow), starsOf(sizeRow)));
+            }
+            if (distanceRow != null) {
+                row1.addView(createPropertyCard(labelOf(distanceRow), valueOf(distanceRow), starsOf(distanceRow)));
+            }
+            // second row: difficulty, terrain (stars preserved)
+            final LinearLayout row2 = createPropertyCardRow();
+            if (diffRow != null) {
+                row2.addView(createPropertyCard(labelOf(diffRow), valueOf(diffRow), starsOf(diffRow)));
+            }
+            if (terrainRow != null) {
+                row2.addView(createPropertyCard(labelOf(terrainRow), valueOf(terrainRow), starsOf(terrainRow)));
+            }
+            // cache name on top, cards below it, rest follows
+            binding.detailsList.addView(cachename, 0);
+            binding.detailsList.addView(row1, 1);
+            binding.detailsList.addView(row2, 2);
+
+            details.addShareAction(typeLine.valueView);
             details.addShareAction(details.add(R.string.cache_geocode, cache.getShortGeocode()).valueView);
             details.addCacheState(cache);
-
-            activity.cacheDistanceView = details.addDistance(cache, activity.cacheDistanceView);
-
-            details.addDifficulty(cache);
-            details.addTerrain(cache);
             details.addRating(cache);
 
             // favorite count
@@ -3105,5 +3199,9 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
 
     public void setNeedsRefresh() {
         refreshOnResume = true;
+    }
+
+    private static int dp2px(final Context context, final int dp) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 }

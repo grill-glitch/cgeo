@@ -33,17 +33,21 @@ public final class CacheTypeColorScheme {
     @ColorInt
     public final int onPrimaryContainer;
     @ColorInt
+    public final int surface;
+    @ColorInt
     public final int surfaceContainer;
     @ColorInt
     public final int onSurface;
 
     private CacheTypeColorScheme(@ColorInt final int primary, @ColorInt final int onPrimary,
                                  @ColorInt final int primaryContainer, @ColorInt final int onPrimaryContainer,
-                                 @ColorInt final int surfaceContainer, @ColorInt final int onSurface) {
+                                 @ColorInt final int surface, @ColorInt final int surfaceContainer,
+                                 @ColorInt final int onSurface) {
         this.primary = primary;
         this.onPrimary = onPrimary;
         this.primaryContainer = primaryContainer;
         this.onPrimaryContainer = onPrimaryContainer;
+        this.surface = surface;
         this.surfaceContainer = surfaceContainer;
         this.onSurface = onSurface;
     }
@@ -72,10 +76,11 @@ public final class CacheTypeColorScheme {
         final int primaryContainer = hslToColor(h, s, clamp01(l + (dark ? 0.10f : 0.18f)));
         final int onPrimary = contrastOk(primary, Color.WHITE) ? Color.WHITE : Color.BLACK;
         final int onPrimaryContainer = contrastOk(primaryContainer, Color.BLACK) ? Color.BLACK : Color.WHITE;
+        final int surface = hslToColor(h, clamp01(s * 0.25f), dark ? 0.07f : 0.97f);
         final int surfaceContainer = hslToColor(h, clamp01(s * 0.35f), dark ? 0.16f : 0.92f);
         final int onSurface = dark ? 0xFFE3E3E3 : 0xFF1A1A1A;
 
-        return new CacheTypeColorScheme(primary, onPrimary, primaryContainer, onPrimaryContainer, surfaceContainer, onSurface);
+        return new CacheTypeColorScheme(primary, onPrimary, primaryContainer, onPrimaryContainer, surface, surfaceContainer, onSurface);
     }
 
     /**
@@ -94,9 +99,10 @@ public final class CacheTypeColorScheme {
         final int onPrimary = attrColor(context, com.google.android.material.R.attr.colorOnPrimary, Color.WHITE);
         final int primaryContainer = attrColor(context, com.google.android.material.R.attr.colorPrimaryContainer, primary);
         final int onPrimaryContainer = attrColor(context, com.google.android.material.R.attr.colorOnPrimaryContainer, Color.BLACK);
+        final int surface = attrColor(context, com.google.android.material.R.attr.colorSurface, 0xFF121212);
         final int surfaceContainer = attrColor(context, com.google.android.material.R.attr.colorSurfaceContainer, 0xFF2A2A2A);
         final int onSurface = attrColor(context, com.google.android.material.R.attr.colorOnSurface, 0xFFE3E3E3);
-        return new CacheTypeColorScheme(primary, onPrimary, primaryContainer, onPrimaryContainer, surfaceContainer, onSurface);
+        return new CacheTypeColorScheme(primary, onPrimary, primaryContainer, onPrimaryContainer, surface, surfaceContainer, onSurface);
     }
 
     private static int attrColor(@NonNull final Context context, final int attr, @ColorInt final int fallback) {

@@ -75,6 +75,12 @@ public final class CacheDetailsCreator {
         parentView.removeAllViews();
     }
 
+    /** The container the detail rows are added to (e.g. a LinearLayout). */
+    @NonNull
+    public ViewGroup getParentView() {
+        return parentView;
+    }
+
     /**
      * Create a "name: value" line.
      *
@@ -213,10 +219,12 @@ public final class CacheDetailsCreator {
         }
     }
 
-    public void addSize(final Geocache cache) {
+    @Nullable
+    public View addSize(final Geocache cache) {
         if (cache.showSize()) {
-            add(R.string.cache_size, cache.getSize().getL10n());
+            return add(R.string.cache_size, cache.getSize().getL10n()).layout;
         }
+        return null;
     }
 
     public void addAlcMode(final Geocache cache) {
@@ -228,16 +236,20 @@ public final class CacheDetailsCreator {
         }
     }
 
-    public void addDifficulty(final Geocache cache) {
+    @Nullable
+    public View addDifficulty(final Geocache cache) {
         if (cache.getDifficulty() > 0) {
-            addStars(R.string.cache_difficulty, cache.getDifficulty());
+            return addStars(R.string.cache_difficulty, cache.getDifficulty());
         }
+        return null;
     }
 
-    public void addTerrain(final Geocache cache) {
+    @Nullable
+    public View addTerrain(final Geocache cache) {
         if (cache.getTerrain() > 0) {
-            addStars(R.string.cache_terrain, cache.getTerrain(), ConnectorFactory.getConnector(cache).getMaxTerrain());
+            return addStars(R.string.cache_terrain, cache.getTerrain(), ConnectorFactory.getConnector(cache).getMaxTerrain());
         }
+        return null;
     }
 
     public void addDifficultyTerrain(final Geocache cache) {
