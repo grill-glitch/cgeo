@@ -1097,12 +1097,13 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
             pager.setBackgroundColor(scheme.surface);
         }
 
-        // tab layout: background from surfaceContainer, indicator/selected text from primary
+        // tab layout: background from surfaceContainer, indicator/selected text from the
+        // brighter primaryContainer so the accent stays visible on the dark container
         final TabLayout tabLayout = findViewById(R.id.tab_layout);
         if (tabLayout != null) {
             tabLayout.setBackgroundColor(scheme.surfaceContainer);
-            tabLayout.setSelectedTabIndicatorColor(scheme.primary);
-            tabLayout.setTabTextColors(scheme.onSurface, scheme.primary);
+            tabLayout.setSelectedTabIndicatorColor(scheme.primaryContainer);
+            tabLayout.setTabTextColors(scheme.onSurface, scheme.primaryContainer);
         }
 
         // pull-to-refresh spinner: primary
