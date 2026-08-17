@@ -32,7 +32,10 @@ public final class CacheDetailCardBuilder {
     public static LinearLayout createPropertyCardRow(@NonNull final Context context) {
         final LinearLayout row = new LinearLayout(context);
         row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setPadding(0, 3, 0, 3);
+        // NOTE: setPadding takes PIXELS - convert dp so the vertical gap matches the
+        // horizontal margin between the cards (3dp + 3dp each side)
+        final int pad = Math.round(3 * context.getResources().getDisplayMetrics().density);
+        row.setPadding(0, pad, 0, pad);
         return row;
     }
 

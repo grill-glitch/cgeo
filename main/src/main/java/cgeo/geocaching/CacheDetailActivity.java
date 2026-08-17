@@ -1084,7 +1084,7 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
         }
         final androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(TextUtils.coloredCacheText(this, cache, cache.getName() + " (" + cache.getShortGeocode() + ")"));
+            actionBar.setTitle(cache.getGeocode());
         }
 
         // content area: seed-derived surface instead of the system palette
@@ -1514,7 +1514,7 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
             binding.detailsList.addView(row2, 2);
 
             details.addShareAction(typeLine.valueView);
-            details.addShareAction(details.add(R.string.cache_geocode, cache.getShortGeocode()).valueView);
+            // geocode row removed: the geocode is already shown in the title bar
             details.addCacheState(cache);
             details.addRating(cache);
 

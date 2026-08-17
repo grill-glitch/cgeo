@@ -32,9 +32,11 @@ import cgeo.geocaching.utils.TextUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.appbar.MaterialToolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -386,6 +390,8 @@ public class CachePopupFragment extends AbstractDialogFragmentWithProximityNotif
 
     /**
      * MD3: give the map popup the same colors as the cache detail page:
+     * - popup toolbar = detail page action bar ({@code CacheTypeColorScheme.surfaceContainer}
+     *   background, onSurface title/nav/menu icons, swipe-up handle bar tinted alike)
      * - popup background = detail page background ({@code CacheTypeColorScheme.surface})
      * - the property cards inside are already colored by AbstractDialogFragment
      *   ({@code CacheTypeColorScheme.surfaceContainer}, same as the detail cards).
@@ -396,6 +402,27 @@ public class CachePopupFragment extends AbstractDialogFragmentWithProximityNotif
                 : cache.getType().typeColor;
         final int effectiveTypeColor = getResources().getColor(typeColorRes);
         final CacheTypeColorScheme scheme = CacheTypeColorScheme.fromSeed(requireContext(), effectiveTypeColor);
+
+        // swipe-up handle bar above the toolbar: same color as the action bar
+        final Drawable swipeBackground = binding.swipeUpIndicator.swipeUpIndicator.getBackground();
+        if (swipeBackground != null) {
+            swipeBackground.mutate().setTint(scheme.surfaceContainer);
+        }
+
+        // toolbar: same as the detail page action bar (surfaceContainer + onSurface buttons)
+        final MaterialToolbar toolbar = binding.toolbar.toolbar;
+        toolbar.setBackgroundColor(scheme.surfaceContainer);
+        toolbar.setNavigationIconTint(scheme.onSurface);
+        toolbar.setTitleTextColor(scheme.onSurface);
+        toolbar.setSubtitleTextColor(scheme.onSurface);
+        final Menu menu = toolbar.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            final MenuItem item = menu.getItem(i);
+            if (item.getIcon() != null) {
+                item.getIcon().mutate().setTint(scheme.onSurface);
+            }
+        }
+
         binding.detailsListBox.setBackgroundColor(scheme.surface);
     }
 
