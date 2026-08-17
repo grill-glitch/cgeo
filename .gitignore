@@ -52,4 +52,4 @@ captures/
 # ignore Claude internal files
 .claude/
 
-main/usage.txt
+main/usage.txtcgeo-release.keystore
