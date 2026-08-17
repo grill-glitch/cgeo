@@ -8,6 +8,7 @@ import cgeo.geocaching.ui.ViewUtils;
 import cgeo.geocaching.ui.dialog.Dialogs;
 import cgeo.geocaching.unifiedmap.AbstractMapFragment;
 import cgeo.geocaching.unifiedmap.LayerHelper;
+import cgeo.geocaching.unifiedmap.MapCoordinateConverter;
 import cgeo.geocaching.unifiedmap.UnifiedMapActivity;
 import cgeo.geocaching.unifiedmap.geoitemlayer.IProviderGeoItemLayer;
 import cgeo.geocaching.unifiedmap.geoitemlayer.MapsforgeVtmGeoItemLayer;
@@ -74,6 +75,7 @@ public class MapsforgeVtmFragment extends AbstractMapFragment {
     private View mapAttribution;
     private boolean doReapplyTheme = false;
     private MapEventsReceiver mapEventsReceiver = null;
+    private MapCoordinateConverter coordinateConverter = MapCoordinateConverter.IDENTITY;
 
     private Event lastEvent = null;
 
@@ -243,6 +245,7 @@ public class MapsforgeVtmFragment extends AbstractMapFragment {
 
     @Override
     public boolean setTileSource(final AbstractTileProvider newSource, final boolean force) {
+        coordinateConverter = newSource.getCoordinateConverter();
         final boolean needsUpdate = super.setTileSource(newSource, force);
         if (needsUpdate) {
             ((AbstractMapsforgeVTMTileProvider) currentTileProvider).addTileLayer(this, mMap);
@@ -257,7 +260,7 @@ public class MapsforgeVtmFragment extends AbstractMapFragment {
 
     @Override
     public IProviderGeoItemLayer<?> createGeoItemProviderLayer() {
-        return new MapsforgeVtmGeoItemLayer(mMap, mMapLayers);
+        return new MapsforgeVtmGeoItemLayer(mMap, mMapLayers, coordinateConverter);
     }
 
     /**
@@ -298,15 +301,16 @@ public class MapsforgeVtmFragment extends AbstractMapFragment {
 
     @Override
     public void setCenter(final Geopoint geopoint) {
+        final Geopoint mapPoint = coordinateConverter.toMap(geopoint);
         final MapPosition pos = mMap.getMapPosition();
-        pos.setPosition(geopoint.getLatitude(), geopoint.getLongitude());
+        pos.setPosition(mapPoint.getLatitude(), mapPoint.getLongitude());
         mMap.setMapPosition(pos);
     }
 
     @Override
     public Geopoint getCenter() {
         final MapPosition pos = mMap.getMapPosition();
-        return new Geopoint(pos.getLatitude(), pos.getLongitude());
+        return coordinateConverter.fromMap(new Geopoint(pos.getLatitude(), pos.getLongitude()));
     }
 
     @Override
@@ -316,7 +320,7 @@ public class MapsforgeVtmFragment extends AbstractMapFragment {
         if (bb == null) {
             return null;
         }
-        return Viewport.forE6(bb.minLatitudeE6, bb.minLongitudeE6, bb.maxLatitudeE6, bb.maxLongitudeE6);
+        return coordinateConverter.fromMap(Viewport.forE6(bb.minLatitudeE6, bb.minLongitudeE6, bb.maxLatitudeE6, bb.maxLongitudeE6));
     }
 
     @Override
@@ -330,7 +334,8 @@ public class MapsforgeVtmFragment extends AbstractMapFragment {
 
     @Override
     public void zoomToBounds(final Viewport bounds) {
-        zoomToBounds(new BoundingBox(bounds.bottomLeft.getLatitudeE6(), bounds.bottomLeft.getLongitudeE6(), bounds.topRight.getLatitudeE6(), bounds.topRight.getLongitudeE6()));
+        final Viewport mapBounds = coordinateConverter.toMap(bounds);
+        zoomToBounds(new BoundingBox(mapBounds.bottomLeft.getLatitudeE6(), mapBounds.bottomLeft.getLongitudeE6(), mapBounds.topRight.getLatitudeE6(), mapBounds.topRight.getLongitudeE6()));
     }
 
     public void zoomToBounds(final BoundingBox bounds) {
@@ -441,13 +446,15 @@ public class MapsforgeVtmFragment extends AbstractMapFragment {
                 final GeoPoint p = mMap.viewport().fromScreenPoint(e.getX(), e.getY());
                 final int[] location = new int[2];
                 mMapView.getLocationOnScreen(location);
-                onTapCallback(p.latitudeE6, p.longitudeE6, (int) e.getX() + location[0], (int) e.getY() + location[1], false);
+                final Geopoint gp = coordinateConverter.fromMap(new Geopoint(p.getLatitude(), p.getLongitude()));
+                onTapCallback(gp.getLatitudeE6(), gp.getLongitudeE6(), (int) e.getX() + location[0], (int) e.getY() + location[1], false);
                 return true;
             } else if (g instanceof Gesture.LongPress) {
                 final GeoPoint p = mMap.viewport().fromScreenPoint(e.getX(), e.getY());
                 final int[] location = new int[2];
                 mMapView.getLocationOnScreen(location);
-                onTapCallback(p.latitudeE6, p.longitudeE6, (int) e.getX() + location[0], (int) e.getY() + location[1], true);
+                final Geopoint gp = coordinateConverter.fromMap(new Geopoint(p.getLatitude(), p.getLongitude()));
+                onTapCallback(gp.getLatitudeE6(), gp.getLongitudeE6(), (int) e.getX() + location[0], (int) e.getY() + location[1], true);
                 return true;
             }
             return false;

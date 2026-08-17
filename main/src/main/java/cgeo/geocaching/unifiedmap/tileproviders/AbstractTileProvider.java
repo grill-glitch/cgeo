@@ -1,6 +1,7 @@
 package cgeo.geocaching.unifiedmap.tileproviders;
 
 import cgeo.geocaching.unifiedmap.AbstractMapFragment;
+import cgeo.geocaching.unifiedmap.MapCoordinateConverter;
 
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
@@ -95,6 +96,14 @@ public abstract class AbstractTileProvider {
 
     public int getZoomMax() {
         return zoomMax;
+    }
+
+    /**
+     * Returns the converter between cgeo (WGS-84) coordinates and the tile source's own
+     * coordinate system (e.g. GCJ-02 for Chinese map providers). Defaults to identity.
+     */
+    public MapCoordinateConverter getCoordinateConverter() {
+        return MapCoordinateConverter.IDENTITY;
     }
 
     // ========================================================================

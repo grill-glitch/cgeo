@@ -21,9 +21,13 @@ public class AbstractMapsforgeOnlineTileProvider extends AbstractMapsforgeTilePr
     private String tilePath;
 
     AbstractMapsforgeOnlineTileProvider(final String name, final Uri uri, final String tilePath, final int zoomMin, final int zoomMax, final Pair<String, Boolean> mapAttribution) {
+        this(name, uri, tilePath, zoomMin, zoomMax, mapAttribution, new String[]{uri.getHost()});
+    }
+
+    AbstractMapsforgeOnlineTileProvider(final String name, final Uri uri, final String tilePath, final int zoomMin, final int zoomMax, final Pair<String, Boolean> mapAttribution, final String[] tileHosts) {
         super(name, uri, zoomMin, zoomMax, mapAttribution);
         this.tilePath = tilePath;
-        mfTileSource = new AbstractTileSource(new String[]{ uri.getHost() }, 443) {
+        mfTileSource = new AbstractTileSource(tileHosts, 443) {
             @Override
             public int getParallelRequestsLimit() {
                 return 8;
@@ -31,12 +35,9 @@ public class AbstractMapsforgeOnlineTileProvider extends AbstractMapsforgeTilePr
 
             @Override
             public URL getTileUrl(final Tile tile) throws MalformedURLException {
-                // tilePath: "/cyclosm/{Z}/{X}/{Y}.png"
-                final String path = AbstractMapsforgeOnlineTileProvider.this.tilePath
-                        .replace("{Z}", String.valueOf(tile.zoomLevel))
-                        .replace("{X}", String.valueOf(tile.tileX))
-                        .replace("{Y}", String.valueOf(tile.tileY));
-                return new URL(AbstractMapsforgeOnlineTileProvider.this.mapUri + path);
+                // tilePath: "/cyclosm/{Z}/{X}/{Y}.png" or "/realtimerender?z={Z}&x={X}&y={-Y}..."
+                final String path = TilePathFormatter.format(AbstractMapsforgeOnlineTileProvider.this.tilePath, tile.tileX, tile.tileY, tile.zoomLevel);
+                return new URL(AbstractMapsforgeOnlineTileProvider.this.mapUri.getScheme(), getHostName(), this.port, path);
             }
 
             @Override

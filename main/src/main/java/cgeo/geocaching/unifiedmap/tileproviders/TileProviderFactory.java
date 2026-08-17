@@ -102,8 +102,11 @@ public class TileProviderFactory {
             registerTileProvider(new GoogleTerrainSource());
         }
 
-        // OSM online tile providers (Mapsforge)
+        // CN map providers (Mapsforge): Amap/Tencent use GCJ-02, Esri satellite uses WGS-84
         if (Settings.showMapsforgeInUnifiedMap()) {
+            registerTileProvider(new AmapSource());
+            registerTileProvider(new TencentSource());
+            registerTileProvider(new EsriSatelliteSource());
             registerTileProvider(new OsmOrgSource());
             registerTileProvider(new OsmDeSource());
             registerTileProvider(new CyclosmSource());
@@ -114,8 +117,11 @@ public class TileProviderFactory {
             }
         }
 
-        // OSM online tile providers (VTM)
+        // CN map providers (VTM)
         if (Settings.showVTMInUnifiedMap()) {
+            registerTileProvider(new AmapVTMSource());
+            registerTileProvider(new TencentVTMSource());
+            registerTileProvider(new EsriSatelliteVTMSource());
             registerTileProvider(new OsmOrgVTMSource());
             registerTileProvider(new OsmDeVTMSource());
             registerTileProvider(new CyclosmVTMSource());
