@@ -8,5 +8,6 @@
     android:minHeight="@dimen/actionbar_height"
     android:background="?attr/colorSurfaceContainer"
     android:elevation="4dp"
-    android:theme="@style/tool_bar"
-    app:popupTheme="@style/appToolbarPopup"/>
+    app:popupTheme="@style/appToolbarPopup"
+    app:titleTextColor="?attr/colorOnSurface"
+    app:subtitleTextColor="?attr/colorOnSurfaceVariant"/>

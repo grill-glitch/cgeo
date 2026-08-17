@@ -70,8 +70,8 @@
     <!-- actionbar -->
 
     <style name="actionBarStyle" parent="Widget.MaterialComponents.ActionBar.Solid">
-        <item name="android:textColorPrimary">@color/colorTextActionBar</item>
-        <item name="android:textColor">@color/colorTextActionBar</item>
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="background">@color/colorBackgroundActionBar</item>
         <item name="titleTextStyle">@style/action_bar_title</item>
         <item name="subtitleTextStyle">@style/action_bar_subtitle</item>
@@ -79,7 +79,7 @@
 
     <style name="actionBarActionOverflow" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:src">@drawable/three_dot_vertical</item>
-        <item name="tint">@color/colorTextActionBar</item>
+        <item name="tint">?attr/colorOnSurface</item>
     </style>
 
     <style name="actionBarActionOverflow2" parent="actionBarActionOverflow">
@@ -87,8 +87,8 @@
     </style>
 
     <style name="tool_bar" parent="actionBarStyle">
-        <item name="colorControlNormal">@color/colorTextActionBar</item>
-        <item name="colorOnPrimary">@color/colorTextActionBar</item>
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+        <item name="colorOnPrimary">?attr/colorOnSurface</item>
         <item name="android:itemTextAppearance">@style/text_default</item>
     </style>
 
@@ -103,12 +103,12 @@
         <item name="android:lines">1</item>
         <item name="android:text">c:geo</item>
         <item name="android:textSize">@dimen/textSize_toolbarPrimary</item>
-        <item name="android:textColor">@color/colorTextActionBar</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="action_bar_subtitle" parent="action_bar_title">
         <item name="android:textSize">@dimen/textSize_toolbarSecondary</item>
-        <item name="android:textColor">@color/colorTextHintActionBar</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
         <item name="android:text" />
     </style>
 

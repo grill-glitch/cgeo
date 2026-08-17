@@ -4,6 +4,7 @@ import cgeo.geocaching.R;
 import cgeo.geocaching.activity.ActivityMixin;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -18,6 +19,7 @@ import androidx.appcompat.view.menu.MenuItemImpl;
 import javax.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
 
 public class MenuUtils {
 
@@ -82,12 +84,24 @@ public class MenuUtils {
             if (!anyMenuItemVisible) {
                 return;
             }
-            tintMenuIconsAndTitles(menu);
+            tintMenuIconsAndTitles(menu, menuContext(menu));
         }, 100);
     }
 
+    /** The menu carries the activity's themed context (Material You overlay applied). */
     @SuppressLint("RestrictedApi")
-    private static void tintMenuIconsAndTitles(final Menu menu) {
+    private static Context menuContext(final Menu menu) {
+        if (menu instanceof MenuBuilder) {
+            final Context ctx = ((MenuBuilder) menu).getContext();
+            if (ctx != null) {
+                return ctx;
+            }
+        }
+        return ColorUtils.getThemedContext();
+    }
+
+    @SuppressLint("RestrictedApi")
+    private static void tintMenuIconsAndTitles(final Menu menu, final Context ctx) {
         for (int i = 0; i < menu.size(); i++) {
             final MenuItem item = menu.getItem(i);
 
@@ -95,30 +109,44 @@ public class MenuUtils {
             final MenuItemImpl itemImpl = (MenuItemImpl) item;
             if (!itemImpl.isActionButton()) {
                 final SpannableString s = new SpannableString(item.getTitle());
-                s.setSpan(new ForegroundColorSpan(getTintColor(item)), 0, s.length(), 0);
+                s.setSpan(new ForegroundColorSpan(getTintColor(ctx, item)), 0, s.length(), 0);
                 item.setTitle(s);
             }
 
             // color icon, if present
-            tintMenuIcon(item);
+            tintMenuIcon(ctx, item);
             if (null != item.getSubMenu()) {
-                tintMenuIconsAndTitles(item.getSubMenu());
+                tintMenuIconsAndTitles(item.getSubMenu(), ctx);
             }
         }
     }
 
     @SuppressLint("RestrictedApi")
-    private static int getTintColor(final MenuItem menuItem) {
+    private static int getTintColor(final Context ctx, final MenuItem menuItem) {
         final MenuItemImpl item = (MenuItemImpl) menuItem;
-        final Resources res = ColorUtils.getThemedContext().getResources();
-        return ColorUtils.setAlpha(item.isActionButton() ? res.getColor(R.color.colorTextActionBar, null) : res.getColor(R.color.colorIconMenu, null), item.isEnabled() ? 255 : 128);
+        final Resources res = ctx.getResources();
+        // use the themed (dynamic) on-surface color for toolbar buttons so they follow
+        // Material You; keep the menu color for overflow/dropdown entries
+        final int base = item.isActionButton()
+                ? MaterialColors.getColor(ctx, androidx.appcompat.R.attr.colorControlNormal, res.getColor(R.color.colorTextActionBar, null))
+                : res.getColor(R.color.colorIconMenu, null);
+        return ColorUtils.setAlpha(base, item.isEnabled() ? 255 : 128);
     }
 
     @SuppressLint("RestrictedApi")
     public static void tintMenuIcon(final MenuItem item) {
         final Drawable drw = item.getIcon();
         if (null != drw) {
-            drw.mutate().setTint(getTintColor(item));
+            drw.mutate().setTint(getTintColor(ColorUtils.getThemedContext(), item));
+            item.setIcon(drw);
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private static void tintMenuIcon(final Context ctx, final MenuItem item) {
+        final Drawable drw = item.getIcon();
+        if (null != drw) {
+            drw.mutate().setTint(getTintColor(ctx, item));
             item.setIcon(drw);
         }
     }

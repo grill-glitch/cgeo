@@ -62,7 +62,7 @@ public final class CompassMiniView extends View {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (instances++ == 0) {
-            final Drawable temp = ResourcesCompat.getDrawable(getResources(), R.drawable.compass_arrow_mini, null);
+            final Drawable temp = ResourcesCompat.getDrawable(getResources(), R.drawable.compass_arrow_mini, getContext().getTheme());
             try {
                 compassArrow = Bitmap.createBitmap(temp.getIntrinsicWidth(), temp.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
                 final Canvas canvas = new Canvas(compassArrow);

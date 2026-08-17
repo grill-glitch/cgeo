@@ -47,8 +47,8 @@
 
     <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="contentInsetStartWithNavigation">0dp</item>
-        <item name="titleTextColor">@color/colorTextActionBar</item>
-        <item name="subtitleTextColor">@color/colorTextHintActionBar</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="subtitleTextColor">?attr/colorOnSurfaceVariant</item>
     </style>
 
     <!-- ensures correct color for headings of submenus in appToolbar -->

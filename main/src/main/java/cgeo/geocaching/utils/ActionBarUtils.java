@@ -11,12 +11,12 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.Window;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.google.android.material.color.MaterialColors;
 import org.apache.commons.lang3.StringUtils;
 
 public class ActionBarUtils {
@@ -55,7 +55,7 @@ public class ActionBarUtils {
             return;
         }
 
-        final SpannableString titleString = getSpannedTitle(subtitleText, R.color.colorTextHintActionBar);
+        final SpannableString titleString = getSpannedTitle(subtitleText, MaterialColors.getColor(activity, com.google.android.material.R.attr.colorOnSurfaceVariant, 0xFF000000));
         supportActionBar.setSubtitle(titleString);
     }
 
@@ -65,14 +65,16 @@ public class ActionBarUtils {
             return;
         }
 
-        final SpannableString titleString = getSpannedTitle(titleText, R.color.colorTextActionBar);
+        // use the themed (dynamic) on-surface color so the title follows Material You
+        final int titleColor = MaterialColors.getColor(activity, androidx.appcompat.R.attr.colorControlNormal, 0xFF000000);
+        final SpannableString titleString = getSpannedTitle(titleText, titleColor);
         supportActionBar.setTitle(titleString);
     }
 
     // @todo remove after switching map ActionBar to Toolbar
     // workaround for colored ActionBar titles/subtitles
     // Checking for an existing span of the given class
-    private static SpannableString getSpannedTitle(final CharSequence spanText, final @ColorRes int colorRes) {
+    private static SpannableString getSpannedTitle(final CharSequence spanText, final int color) {
         // // If a Spanned is already present, check whether a ForegroundColorSpan covers the entire text
         if (TextUtils.hasSpanCoveringWholeText(spanText, ForegroundColorSpan.class)) {
             return new SpannableString(spanText);
@@ -80,7 +82,6 @@ public class ActionBarUtils {
 
         // Create new span with actionbar text color
         final SpannableString titleString = new SpannableString(spanText);
-        final int color = ColorUtils.colorFromResource(colorRes);
         titleString.setSpan(new ForegroundColorSpan(color), 0, titleString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return titleString;
     }

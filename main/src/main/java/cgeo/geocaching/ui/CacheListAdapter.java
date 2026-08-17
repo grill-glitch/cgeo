@@ -504,8 +504,7 @@ public class CacheListAdapter extends ArrayAdapter<Geocache> implements SectionI
 
         final int favCount = cache.getFavoritePoints();
         holder.binding.favorite.setText(Formatter.formatFavCount(favCount));
-        final float rating = cache.getRating();
-        holder.binding.favorite.setBackgroundResource(rating >= 3.5 ? R.drawable.favorite_background_green : rating >= 2.1 ? R.drawable.favorite_background_orange : rating > 0.0 ? R.drawable.favorite_background_red : R.drawable.favorite_background);
+        // favorite count is shown as icon + number below (no background box)
 
         if (isHistory() && cache.getVisitedDate() > 0) {
             holder.binding.info.setText(Formatter.formatCacheInfoHistory(cache));
