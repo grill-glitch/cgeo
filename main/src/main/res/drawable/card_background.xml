@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MD3 card background for cache list items: rounded corners + themed surface -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorOnSurfaceVariant">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/card_corner_radius" />
+            <solid android:color="?attr/colorSurfaceContainer" />
+        </shape>
+    </item>
+</ripple>

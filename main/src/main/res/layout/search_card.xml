@@ -6,10 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
     android:layout_margin="6dp"
-    app:cardElevation="1dp"
-    app:cardCornerRadius="4dp"
-    app:strokeColor="@color/colorSeparator"
-    app:strokeWidth="1dp">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="?attr/colorSurfaceContainer"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"

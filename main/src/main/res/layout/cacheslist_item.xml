@@ -5,7 +5,11 @@
     android:id="@+id/one_cache"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@drawable/card_background"
+    android:layout_marginLeft="@dimen/card_margin_horizontal"
+    android:layout_marginRight="@dimen/card_margin_horizontal"
+    android:paddingTop="2dip"
+    android:paddingBottom="2dip"
     tools:context=".ui.CacheListAdapter">
 
     <!-- "found" marker, vertical green/red line -->

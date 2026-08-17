@@ -67,4 +67,9 @@
     <dimen name="emoji_picker_emoji_size">44dp</dimen>
     <dimen name="emoji_picker_title_height">56dp</dimen>
 
+    <!-- MD3 card -->
+    <dimen name="card_corner_radius">12dp</dimen>
+    <dimen name="card_margin_horizontal">8dp</dimen>
+    <dimen name="card_margin_vertical">4dp</dimen>
+
 </resources>
