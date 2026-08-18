@@ -121,7 +121,7 @@ public class CacheLogsViewCreator extends LogsViewCreator {
             addEmptyLogsHeader();
 
             // filter chips (自有/好友/藏主): checked state follows the cache-type accent
-            // (primaryContainer background + onPrimaryContainer text), unchecked stays default
+            // (primary background + onPrimary text), unchecked stays default
             final Activity activity = getActivity();
             if (activity instanceof CacheDetailActivity) {
                 final CacheTypeColorScheme scheme = ((CacheDetailActivity) activity).getCacheColorScheme();
@@ -131,11 +131,11 @@ public class CacheLogsViewCreator extends LogsViewCreator {
                         final Chip chip = (Chip) binding.filterChips.getChildAt(i);
                         final ColorStateList curBg = chip.getChipBackgroundColor();
                         if (curBg != null) {
-                            chip.setChipBackgroundColor(new ColorStateList(states, new int[]{scheme.primaryContainer, curBg.getDefaultColor()}));
+                            chip.setChipBackgroundColor(new ColorStateList(states, new int[]{scheme.primary, curBg.getDefaultColor()}));
                         }
                         final ColorStateList curText = chip.getTextColors();
                         if (curText != null) {
-                            chip.setTextColor(new ColorStateList(states, new int[]{scheme.onPrimaryContainer, curText.getDefaultColor()}));
+                            chip.setTextColor(new ColorStateList(states, new int[]{scheme.onPrimary, curText.getDefaultColor()}));
                         }
                     }
                 }

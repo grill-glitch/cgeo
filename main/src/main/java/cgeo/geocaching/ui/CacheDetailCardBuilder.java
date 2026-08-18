@@ -59,7 +59,7 @@ public final class CacheDetailCardBuilder {
             bg.setColor(scheme.surfaceContainer);
             card.setBackground(bg);
             final RatingBar cardStars = card.findViewById(R.id.property_stars);
-            cardStars.setProgressTintList(ColorStateList.valueOf(scheme.primaryContainer));
+            cardStars.setProgressTintList(ColorStateList.valueOf(scheme.primary));
             cardStars.setProgressBackgroundTintList(ColorStateList.valueOf(scheme.onSurface));
         }
         if (stars != null && stars.getVisibility() == View.VISIBLE) {

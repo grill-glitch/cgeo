@@ -1103,13 +1103,13 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
             pager.setBackgroundColor(scheme.surface);
         }
 
-        // tab layout: background from surfaceContainer, indicator/selected text from the
-        // brighter primaryContainer so the accent stays visible on the dark container
+        // tab layout: background from surfaceContainer, indicator/selected text from primary
+        // (primary is the bright cache-type accent now, no need for primaryContainer)
         final TabLayout tabLayout = findViewById(R.id.tab_layout);
         if (tabLayout != null) {
             tabLayout.setBackgroundColor(scheme.surfaceContainer);
-            tabLayout.setSelectedTabIndicatorColor(scheme.primaryContainer);
-            tabLayout.setTabTextColors(scheme.onSurface, scheme.primaryContainer);
+            tabLayout.setSelectedTabIndicatorColor(scheme.primary);
+            tabLayout.setTabTextColors(scheme.onSurface, scheme.primary);
         }
 
         // pull-to-refresh spinner: primary
@@ -2744,9 +2744,9 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
             if (activity.imageGallery == null) {
                 final ImageGalleryView imageGallery = binding.getRoot().findViewById(R.id.image_gallery);
                 ImageUtils.initializeImageGallery(imageGallery, cache.getGeocode(), cache.getNonStaticImages(), true);
-                // category headers ("自有/介绍/日志") follow the cache-type accent (primaryContainer,
+                // category headers ("自有/介绍/日志") follow the cache-type accent (primary,
                 // same tone as the tab accent)
-                imageGallery.setCategoryTitleColor(activity.cacheColorScheme == null ? 0 : activity.cacheColorScheme.primaryContainer);
+                imageGallery.setCategoryTitleColor(activity.cacheColorScheme == null ? 0 : activity.cacheColorScheme.primary);
                 // Make sure the cache is in the local DB before the user adds images to its image folder.
                 imageGallery.setBeforeImageAddAction(activity::ensureSaved);
                 activity.imageGallery = imageGallery;

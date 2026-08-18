@@ -38,9 +38,16 @@
 
     <color name="cacheType_lab">#ff7b1fa2</color>
     <color name="cacheType_virtual">#ff0288d1</color>
-    <color name="cacheType_mystery">#ff303f9f</color>
-    <color name="cacheType_event">#ffd32f2f</color>
+    <color name="cacheType_mystery">#ff2f68f9</color>
+    <color name="cacheType_event">#fff90404</color>
+    <!-- marker backgrounds keep the original type colors (readable map icons) -
+         the bright accent colors are for UI theming only -->
+    <color name="cacheType_marker_mystery">#ff303f9f</color>
+    <color name="cacheType_marker_event">#ffd32f2f</color>
     <color name="cacheType_traditional">#ff1EFF43</color>
+    <!-- marker background for traditional caches: keep the original green (#388E3C)
+         so map icons stay readable - the bright #1EFF43 accent is for UI theming only -->
+    <color name="cacheType_marker_traditional">#ff388E3C</color>
     <color name="cacheType_multi">#ffF57C00</color>
     <color name="cacheType_cgeo">#fff7991d</color>
     <color name="cacheType_unknown">#ff616161</color>

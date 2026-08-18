@@ -176,8 +176,8 @@ public final class MapMarkerUtils {
             insetsBuilder.withInset(new InsetBuilder(getScaledEmojiDrawable(res, useEmoji, "mainIconForCache", applyScaling), Gravity.CENTER));
         } else {
             // type icon
-            // cache type background color
-            final int tintColor = (cache.isArchived() || cache.isDisabled()) ? R.color.cacheType_disabled : cache.getType().typeColor;
+            // cache type background color (traditional uses the original green for markers)
+            final int tintColor = (cache.isArchived() || cache.isDisabled()) ? R.color.cacheType_disabled : getMarkerBackgroundColorRes(cache.getType());
             // make drawable mutatable, as setting tint will otherwise change the background for all markers (on Android 7-9)!
             final Drawable backgroundTemp = ViewUtils.getDrawable(cache.getMapMarkerBackgroundId(), true);
             DrawableCompat.setTint(backgroundTemp, ResourcesCompat.getColor(res, tintColor, null));
@@ -388,8 +388,8 @@ public final class MapMarkerUtils {
         int dotIcon = -1;
         int tintColor;
 
-        // Background color: Cache type color / disabled
-        tintColor = cache.getType().typeColor;
+        // Background color: Cache type color / disabled (traditional: original green)
+        tintColor = getMarkerBackgroundColorRes(cache.getType());
         if (cache.isArchived() || cache.isDisabled()) {
             tintColor = R.color.cacheType_disabled;
         }
@@ -884,8 +884,8 @@ public final class MapMarkerUtils {
         }
         final InsetsBuilder markerBuilder = new InsetsBuilder(res, true);
         markerBuilder.withInset(new InsetBuilder(markerBg));
-        // cache type background color
-        final int tintColor = (cache.isArchived() || cache.isDisabled()) ? R.color.cacheType_disabled : cache.getType().typeColor;
+        // cache type background color (traditional: original green)
+        final int tintColor = (cache.isArchived() || cache.isDisabled()) ? R.color.cacheType_disabled : getMarkerBackgroundColorRes(cache.getType());
         final Drawable backgroundTemp;
         // special case for drawing the userdefined type icon in filter dialog
         if (!"ZZ1".equals(cache.getGeocode())) {
@@ -924,6 +924,31 @@ public final class MapMarkerUtils {
     public static void removeHighlighting(final GeoItemLayer<String> nonClickableItemsLayer) {
         nonClickableItemsLayer.remove(CACHE_WAYPOINT_HIGHLIGHTER_GEOITEM);
         nonClickableItemsLayer.remove(CACHE_WAYPOINT_HIGHLIGHTER_BACKGROUND);
+    }
+
+    /**
+     * Color resource for a cache type's map marker background. The types whose
+     * accent color was brightened for UI theming (traditional #1EFF43, mystery
+     * #3A04F9, event #F90404) keep their original, readable marker colors
+     * (cacheType_marker_*).
+     */
+    private static int getMarkerBackgroundColorRes(final CacheType type) {
+        switch (type) {
+            case TRADITIONAL:
+                return R.color.cacheType_marker_traditional;
+            case MYSTERY:
+            case LETTERBOX:
+            case WHERIGO:
+                return R.color.cacheType_marker_mystery;
+            case EVENT:
+            case MEGA_EVENT:
+            case GIGA_EVENT:
+            case CITO:
+            case COMMUN_CELEBRATION:
+                return R.color.cacheType_marker_event;
+            default:
+                return type.typeColor;
+        }
     }
 
 }
