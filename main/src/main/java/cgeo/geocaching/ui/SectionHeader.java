@@ -54,6 +54,11 @@ public class SectionHeader extends LinearLayout {
         titleView.setText(text);
     }
 
+    /** Override the title color (e.g. with the cache-type accent on cache pages). */
+    public void setTitleTextColor(final int color) {
+        titleView.setTextColor(color);
+    }
+
     public void setText(final int text) {
         titleView.setText(text);
     }

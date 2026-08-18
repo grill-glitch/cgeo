@@ -61,6 +61,9 @@ public class ImageGalleryView extends LinearLayout {
     private static final int IMAGE_TARGET_HEIGHT_DP = 200; // without title textview
 
     private Context context;
+
+    /** Optional category-title accent color (cache-type palette on cache pages, 0 = theme default). */
+    private int categoryTitleColor;
     private Activity activity;
     private ImagegalleryViewBinding binding;
     private ImageGalleryAdapter adapter;
@@ -254,6 +257,14 @@ public class ImageGalleryView extends LinearLayout {
         init();
     }
 
+    /** Set the cache-type accent for the category headers (0 = theme default). */
+    public void setCategoryTitleColor(final int color) {
+        this.categoryTitleColor = color;
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     private void init() {
         setOrientation(VERTICAL);
         this.context = new ContextThemeWrapper(getContext(), R.style.cgeo);
@@ -348,6 +359,9 @@ public class ImageGalleryView extends LinearLayout {
         } else {
             binding.imgGalleryCategoryTitle.setVisibility(View.VISIBLE);
             binding.imgGalleryCategoryTitle.setText(category);
+            if (categoryTitleColor != 0) {
+                binding.imgGalleryCategoryTitle.setTitleTextColor(categoryTitleColor);
+            }
         }
         if (entry.getLayoutPosition() == 0) {
             binding.imgGalleryCategoryTitle.setSeparatorAboveVisible(false);

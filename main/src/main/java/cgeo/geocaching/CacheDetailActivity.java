@@ -2738,6 +2738,9 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
             if (activity.imageGallery == null) {
                 final ImageGalleryView imageGallery = binding.getRoot().findViewById(R.id.image_gallery);
                 ImageUtils.initializeImageGallery(imageGallery, cache.getGeocode(), cache.getNonStaticImages(), true);
+                // category headers ("自有/介绍/日志") follow the cache-type accent (primaryContainer,
+                // same tone as the tab accent)
+                imageGallery.setCategoryTitleColor(activity.cacheColorScheme == null ? 0 : activity.cacheColorScheme.primaryContainer);
                 // Make sure the cache is in the local DB before the user adds images to its image folder.
                 imageGallery.setBeforeImageAddAction(activity::ensureSaved);
                 activity.imageGallery = imageGallery;
