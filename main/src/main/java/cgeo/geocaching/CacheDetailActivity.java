@@ -247,6 +247,12 @@ public class CacheDetailActivity extends TabbedViewPagerActivity
     @Nullable
     private CacheTypeColorScheme cacheColorScheme;
 
+    /** The cache-type color scheme of this detail page, or null if not yet loaded. */
+    @Nullable
+    public CacheTypeColorScheme getCacheColorScheme() {
+        return cacheColorScheme;
+    }
+
     private ImageGalleryView imageGallery;
     private int imageGalleryPos = -1;
 

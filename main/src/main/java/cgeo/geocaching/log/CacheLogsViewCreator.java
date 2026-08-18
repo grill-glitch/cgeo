@@ -11,11 +11,14 @@ import cgeo.geocaching.ui.TextParam;
 import cgeo.geocaching.ui.UserClickListener;
 import cgeo.geocaching.ui.dialog.ContextMenuDialog;
 import cgeo.geocaching.ui.dialog.SimpleDialog;
+import cgeo.geocaching.utils.CacheTypeColorScheme;
 import cgeo.geocaching.utils.Formatter;
 import cgeo.geocaching.utils.LocalizationUtils;
 import cgeo.geocaching.utils.ShareUtils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -25,6 +28,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.TooltipCompat;
+
+import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,6 +119,27 @@ public class CacheLogsViewCreator extends LogsViewCreator {
         if (binding != null) {
             addLogCountsHeader();
             addEmptyLogsHeader();
+
+            // filter chips (自有/好友/藏主): checked state follows the cache-type accent
+            // (primaryContainer background + onPrimaryContainer text), unchecked stays default
+            final Activity activity = getActivity();
+            if (activity instanceof CacheDetailActivity) {
+                final CacheTypeColorScheme scheme = ((CacheDetailActivity) activity).getCacheColorScheme();
+                if (scheme != null) {
+                    final int[][] states = new int[][]{{android.R.attr.state_checked}, {}};
+                    for (int i = 0; i < binding.filterChips.getChildCount(); i++) {
+                        final Chip chip = (Chip) binding.filterChips.getChildAt(i);
+                        final ColorStateList curBg = chip.getChipBackgroundColor();
+                        if (curBg != null) {
+                            chip.setChipBackgroundColor(new ColorStateList(states, new int[]{scheme.primaryContainer, curBg.getDefaultColor()}));
+                        }
+                        final ColorStateList curText = chip.getTextColors();
+                        if (curText != null) {
+                            chip.setTextColor(new ColorStateList(states, new int[]{scheme.onPrimaryContainer, curText.getDefaultColor()}));
+                        }
+                    }
+                }
+            }
 
             for (int i = 0; i < binding.filterChips.getChildCount(); i++) {
                 ((Chip) binding.filterChips.getChildAt(i)).setOnCheckedChangeListener((buttonView, isChecked) -> {

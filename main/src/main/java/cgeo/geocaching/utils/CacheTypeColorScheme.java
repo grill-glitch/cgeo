@@ -64,7 +64,7 @@ public final class CacheTypeColorScheme {
     @NonNull
     public static CacheTypeColorScheme fromSeed(@NonNull final Context context, @ColorInt final int seed) {
         // keep the seed color as-is; do NOT harmonize with the theme primary, so the
-        // cache type color keeps its identity
+        // cache type color keeps its identity (traditional uses #1EFF43, see colors.xml)
         final int primary = seed;
         final boolean dark = isDarkTheme(context);
 

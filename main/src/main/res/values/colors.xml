@@ -40,7 +40,7 @@
     <color name="cacheType_virtual">#ff0288d1</color>
     <color name="cacheType_mystery">#ff303f9f</color>
     <color name="cacheType_event">#ffd32f2f</color>
-    <color name="cacheType_traditional">#ff388E3C</color>
+    <color name="cacheType_traditional">#ff1EFF43</color>
     <color name="cacheType_multi">#ffF57C00</color>
     <color name="cacheType_cgeo">#fff7991d</color>
     <color name="cacheType_unknown">#ff616161</color>
