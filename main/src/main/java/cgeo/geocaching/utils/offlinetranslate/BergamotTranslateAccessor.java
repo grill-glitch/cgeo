@@ -52,10 +52,11 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
 
     private static final String TAG = "BergamotTranslateAccessor";
 
-    // Domain-specific cgeo models hosted on GitHub (see grill-glitch/cgeo-mt-models).
-    // Replaces Mozilla's production bucket; only Simplified Chinese (zh) pairs are provided.
+    // Domain-specific cgeo models hosted on GitHub (see grill-glitch/cgeo-mt-pipeline).
+    // Currently the public Mozilla models (en<->zh) are used directly; terminology
+    // is normalized in fixTerminology(). Only Simplified Chinese (zh) pairs are provided.
     private static final String MODEL_BUCKET_URL =
-        "https://github.com/grill-glitch/cgeo-mt-models/releases/download/v1.0.1/";
+        "https://github.com/grill-glitch/cgeo-mt-pipeline/releases/download/0.1.0/";
     private static final String MODEL_REGISTRY_URL = MODEL_BUCKET_URL + "models.json";
 
     private static final String PIVOT_LANGUAGE = "en";
@@ -310,7 +311,7 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
                                 new String[]{source}
                             );
                         }
-                        final String translated = (result != null && result.length > 0) ? result[0] : source;
+                        final String translated = fixTerminology(source, (result != null && result.length > 0) ? result[0] : source);
                         runCallback(() -> onSuccess.accept(translated));
                     } catch (final Throwable e) {
                         // Catch Throwable (not just Exception) so that native-library Errors
@@ -334,6 +335,20 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
 
     private static String pairKey(final String from, final String to) {
         return from + "-" + to;
+    }
+
+    /**
+     * Terminology guard for the public Mozilla models: they translate "cache"
+     * as the generic 缓存, while the geocaching term expected by c:geo users is
+     * 藏点. Fires only when the source text contains "cache" and the zh output
+     * contains 缓存; generic uses (cache memory etc.) are also mapped, which is
+     * acceptable inside the geocaching domain.
+     */
+    private static String fixTerminology(final String source, final String translated) {
+        if (!source.matches("(?i).*\\bcache(s|d)?\\b.*")) {
+            return translated;
+        }
+        return translated.replace("缓存", "藏点");
     }
 
     private static File getPairDir(final String from, final String to) {
