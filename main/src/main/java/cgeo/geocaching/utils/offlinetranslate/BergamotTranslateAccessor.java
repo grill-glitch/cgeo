@@ -52,10 +52,11 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
 
     private static final String TAG = "BergamotTranslateAccessor";
 
-    // Mozilla's production model bucket (MPL-2.0 licensed models)
+    // Domain-specific cgeo models hosted on GitHub (see grill-glitch/cgeo-mt-models).
+    // Replaces Mozilla's production bucket; only Simplified Chinese (zh) pairs are provided.
     private static final String MODEL_BUCKET_URL =
-        "https://storage.googleapis.com/moz-fx-translations-data--303e-prod-translations-data/";
-    private static final String MODEL_REGISTRY_URL = MODEL_BUCKET_URL + "db/models.json";
+        "https://github.com/grill-glitch/cgeo-mt-models/releases/download/v1.0.0/";
+    private static final String MODEL_REGISTRY_URL = MODEL_BUCKET_URL + "models.json";
 
     private static final String PIVOT_LANGUAGE = "en";
 
@@ -69,19 +70,10 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
      */
     private static final Scheduler NATIVE_SCHEDULER = AndroidRxUtils.singleThreadPool();
 
-    // All language codes with Release-status models in both directions in Mozilla's registry.
-    // Verified against https://storage.googleapis.com/moz-fx-translations-data--303e-prod-translations-data/db/models.json
-    // "zh-hant" maps to registry key "zh_hant" (Traditional Chinese); see toRegistryKey().
+    // Only Simplified Chinese models are hosted by this build (en is the pivot).
+    // All other languages of upstream Mozilla would 404 against our registry.
     private static final Set<String> SUPPORTED_LANGUAGES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-        "en",
-        // European
-        "bg", "ca", "cs", "da", "de", "el", "es", "et", "fi", "fr",
-        "hu", "is", "it", "lt", "lv", "nb", "nl", "no", "pl", "pt",
-        "ro", "ru", "sk", "sl", "sv", "uk",
-        // Middle East / Central Asia
-        "ar", "fa", "he",
-        // South / Southeast / East Asia
-        "bn", "gu", "hi", "id", "ja", "kn", "ko", "ml", "ms", "te", "th", "tr", "vi", "zh", "zh-hant"
+        "en", "zh"
     )));
 
     /** Resolved download URLs for one translation direction (gzip-compressed on server) */
