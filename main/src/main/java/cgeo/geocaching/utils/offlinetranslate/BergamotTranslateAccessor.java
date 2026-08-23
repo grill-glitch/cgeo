@@ -55,7 +55,7 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
     // Domain-specific cgeo models hosted on GitHub (see grill-glitch/cgeo-mt-models).
     // Replaces Mozilla's production bucket; only Simplified Chinese (zh) pairs are provided.
     private static final String MODEL_BUCKET_URL =
-        "https://github.com/grill-glitch/cgeo-mt-models/releases/download/v1.0.0/";
+        "https://github.com/grill-glitch/cgeo-mt-models/releases/download/v1.0.1/";
     private static final String MODEL_REGISTRY_URL = MODEL_BUCKET_URL + "models.json";
 
     private static final String PIVOT_LANGUAGE = "en";
