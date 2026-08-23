@@ -310,7 +310,7 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
                                 new String[]{source}
                             );
                         }
-                        final String translated = (result != null && result.length > 0) ? result[0] : source;
+                        final String translated = fixTerminology(source, (result != null && result.length > 0) ? result[0] : source);
                         runCallback(() -> onSuccess.accept(translated));
                     } catch (final Throwable e) {
                         // Catch Throwable (not just Exception) so that native-library Errors
@@ -334,6 +334,25 @@ public class BergamotTranslateAccessor implements ITranslateAccessor {
 
     private static String pairKey(final String from, final String to) {
         return from + "-" + to;
+    }
+
+    /**
+     * Terminology guard for the domain models: the small student model is prone to
+     * translating "cache" as the generic 缓存 instead of the geocaching term 藏点
+     * (the training corpus is ~99% 藏点, but the model drifts on long/novel input).
+     * The upstream c:geo translations also mix 缓存/藏点; we normalize to 藏点
+     * whenever the source mentions cache(s) and the output contains 缓存.
+     */
+    private static String fixTerminology(final String source, final String translated) {
+        if (translated == null || source == null) {
+            return translated;
+        }
+        // Only when the source mentions cache(s) and we produce zh output
+        if (!source.matches("(?i).*\\bcaches?\\b.*") || !translated.contains("缓存")) {
+            return translated;
+        }
+        // "缓存" -> "藏点" (single-pass replace; c:geo domain context)
+        return translated.replace("缓存", "藏点");
     }
 
     private static File getPairDir(final String from, final String to) {
