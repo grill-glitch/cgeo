@@ -38,7 +38,7 @@
 
     <color name="cacheType_lab">#ff7b1fa2</color>
     <color name="cacheType_virtual">#ff0288d1</color>
-    <color name="cacheType_mystery">#ff2f68f9</color>
+    <color name="cacheType_mystery">#ff61abf9</color>
     <color name="cacheType_event">#fff90404</color>
     <!-- marker backgrounds keep the original type colors (readable map icons) -
          the bright accent colors are for UI theming only -->
